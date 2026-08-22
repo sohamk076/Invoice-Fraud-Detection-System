@@ -1,0 +1,253 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String       @id @default(uuid())
+  name         String
+  email        String       @unique
+  passwordHash String
+  role         String       @default("FINANCE_USER") // ADMIN, AUDITOR, FINANCE_USER
+  department   String?      @default("Finance & Accounts")
+  phone        String?
+  avatarUrl    String?
+  isActive     Boolean      @default(true)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  assignedAlerts FraudAlert[]
+  auditLogs      AuditLog[]
+  reviewedInvoices Invoice[] @relation("ReviewedInvoices")
+
+  @@index([email])
+  @@index([role])
+}
+
+model Vendor {
+  id                 String          @id @default(uuid())
+  name               String
+  legalName          String
+  gstin              String          @unique
+  pan                String
+  email              String
+  phone              String
+  address            String
+  city               String
+  state              String
+  stateCode          String          // e.g. "27" for Maharashtra, "29" for Karnataka
+  pincode            String
+  bankAccountNumber  String?
+  bankIfsc           String?
+  bankName           String?
+  isVerified         Boolean         @default(true)
+  riskScore          Float           @default(0.0) // 0-100 vendor aggregated risk
+  totalInvoicesCount Int             @default(0)
+  totalAmountBilled  Float           @default(0.0)
+  fraudFlagCount     Int             @default(0)
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  invoices       Invoice[]
+  purchaseOrders PurchaseOrder[]
+
+  @@index([gstin])
+  @@index([pan])
+  @@index([name])
+}
+
+model PurchaseOrder {
+  id           String              @id @default(uuid())
+  poNumber     String              @unique
+  vendorId     String
+  vendor       Vendor              @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  issueDate    DateTime
+  deliveryDate DateTime?
+  totalAmount  Float
+  status       String              @default("OPEN") // OPEN, FULFILLED, CANCELLED
+  notes        String?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  items    PurchaseOrderItem[]
+  invoices Invoice[]
+
+  @@index([poNumber])
+  @@index([vendorId])
+}
+
+model PurchaseOrderItem {
+  id              String        @id @default(uuid())
+  purchaseOrderId String
+  purchaseOrder   PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  description     String
+  hsnSac          String
+  quantity        Float
+  unitPrice       Float
+  taxRate         Float         // e.g. 18.0 for 18%
+  totalAmount     Float
+  createdAt       DateTime      @default(now())
+
+  @@index([purchaseOrderId])
+}
+
+model Invoice {
+  id                     String          @id @default(uuid())
+  invoiceNumber          String
+  vendorId               String
+  vendor                 Vendor          @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  purchaseOrderId        String?
+  purchaseOrder          PurchaseOrder?  @relation(fields: [purchaseOrderId], references: [id], onDelete: SetNull)
+  invoiceDate            DateTime
+  dueDate                DateTime?
+  vendorGstin            String
+  customerGstin          String          // Our company GSTIN
+  placeOfSupply          String          // State name
+  placeOfSupplyStateCode String          // 2-digit code
+  billingAddress         String
+  shippingAddress        String?
+  taxableAmount          Float
+  cgstAmount             Float           @default(0.0)
+  sgstAmount             Float           @default(0.0)
+  igstAmount             Float           @default(0.0)
+  totalTaxAmount         Float
+  grandTotal             Float
+  roundOff               Float           @default(0.0)
+  isInterState           Boolean         @default(false)
+  fileUrl                String?
+  fileName               String?
+  fileType               String?         // pdf, image/jpeg, image/png
+  status                 String          @default("PENDING") // PENDING, VERIFIED, SUSPICIOUS, FLAGGED_FRAUD, REJECTED
+  fraudScore             Float           @default(0.0) // 0 - 100
+  riskLevel              String          @default("LOW") // LOW, MEDIUM, HIGH, CRITICAL
+  reviewedById           String?
+  reviewedBy             User?           @relation("ReviewedInvoices", fields: [reviewedById], references: [id], onDelete: SetNull)
+  reviewedAt             DateTime?
+  reviewNotes            String?
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+
+  items     InvoiceItem[]
+  detection FraudDetection?
+  alerts    FraudAlert[]
+  auditLogs AuditLog[]
+
+  @@index([invoiceNumber])
+  @@index([vendorId])
+  @@index([status])
+  @@index([riskLevel])
+  @@index([invoiceDate])
+}
+
+model InvoiceItem {
+  id             String   @id @default(uuid())
+  invoiceId      String
+  invoice        Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  itemDescription String
+  hsnSac         String
+  quantity       Float
+  unitPrice      Float
+  taxableValue   Float
+  gstRate        Float    // 0, 5, 12, 18, 28
+  cgstAmount     Float    @default(0.0)
+  sgstAmount     Float    @default(0.0)
+  igstAmount     Float    @default(0.0)
+  totalAmount    Float
+  createdAt      DateTime @default(now())
+
+  @@index([invoiceId])
+}
+
+model FraudDetection {
+  id                 String             @id @default(uuid())
+  invoiceId          String             @unique
+  invoice            Invoice            @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  overallScore       Float              @default(0.0) // 0-100
+  riskLevel          String             @default("LOW") // LOW, MEDIUM, HIGH, CRITICAL
+  passedRulesCount   Int                @default(0)
+  warningRulesCount  Int                @default(0)
+  failedRulesCount   Int                @default(0)
+  criticalRulesCount Int                @default(0)
+  summaryExplanation String?
+  evaluatedAt        DateTime           @default(now())
+
+  ruleResults FraudRuleResult[]
+
+  @@index([invoiceId])
+  @@index([riskLevel])
+}
+
+model FraudRuleResult {
+  id                String         @id @default(uuid())
+  fraudDetectionId  String
+  fraudDetection    FraudDetection @relation(fields: [fraudDetectionId], references: [id], onDelete: Cascade)
+  ruleCode          String         // e.g. DUP-01, GST-01, TAX-01
+  ruleCategory      String         // DUPLICATE, GST_VALIDATION, TAX_VALIDATION, AMOUNT_ANOMALY, DATE_ANOMALY, VENDOR_RISK, PO_MATCHING, MANIPULATION
+  ruleName          String
+  status            String         // PASS, WARNING, FAIL, CRITICAL
+  scoreContribution Float          @default(0.0) // Added penalty score
+  details           String?        // Human readable explanation
+  detectedValue     String?
+  expectedValue     String?
+  createdAt         DateTime       @default(now())
+
+  @@index([fraudDetectionId])
+  @@index([ruleCode])
+  @@index([status])
+}
+
+model FraudAlert {
+  id              String    @id @default(uuid())
+  invoiceId       String
+  invoice         Invoice   @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  alertType       String    // e.g. CRITICAL_DUPLICATE, TAX_DISCREPANCY, FAKE_GSTIN
+  severity        String    // LOW, MEDIUM, HIGH, CRITICAL
+  title           String
+  description     String
+  status          String    @default("OPEN") // OPEN, IN_REVIEW, RESOLVED, DISMISSED
+  assignedToId    String?
+  assignedTo      User?     @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+  resolutionNotes String?
+  createdAt       DateTime  @default(now())
+  resolvedAt      DateTime?
+
+  @@index([invoiceId])
+  @@index([status])
+  @@index([severity])
+}
+
+model AuditLog {
+  id            String   @id @default(uuid())
+  userId        String?
+  user          User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  invoiceId     String?
+  invoice       Invoice? @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  action        String   // INVOICE_UPLOADED, STATUS_CHANGED, ALERT_RESOLVED, FRAUD_EVALUATED, VENDOR_UPDATED
+  entityType    String   // INVOICE, ALERT, VENDOR, SYSTEM
+  entityId      String?
+  previousState String?  // JSON string
+  newState      String?  // JSON string
+  details       String
+  ipAddress     String?
+  timestamp     DateTime @default(now())
+
+  @@index([userId])
+  @@index([invoiceId])
+  @@index([action])
+  @@index([timestamp])
+}
+
+model SystemSetting {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       String
+  description String?
+  category    String   @default("GENERAL") // GENERAL, FRAUD_RULES, THRESHOLDS
+  updatedAt   DateTime @updatedAt
+
+  @@index([key])
+}

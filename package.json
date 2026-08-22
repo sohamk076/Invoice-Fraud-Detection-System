@@ -1,0 +1,35 @@
+{
+  "name": "invoice-fraud-detection-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Indian Invoice Fraud Detection System - Enterprise Rule-Based Audit Web Application",
+  "scripts": {
+    "dev": "concurrently -k -n \"SERVER,CLIENT\" -c \"cyan,magenta\" \"npm.cmd run dev --prefix server\" \"npm.cmd run dev --prefix client\"",
+    "dev:server": "npm.cmd run dev --prefix server",
+    "dev:client": "npm.cmd run dev --prefix client",
+    "build": "npm.cmd run build --prefix server && npm.cmd run build --prefix client",
+    "build:server": "npm.cmd run build --prefix server",
+    "build:client": "npm.cmd run build --prefix client",
+    "typecheck": "npm.cmd run typecheck --prefix server && npm.cmd run typecheck --prefix client",
+    "test": "npm.cmd test --prefix server",
+    "db:generate": "npm.cmd run db:generate --prefix server",
+    "db:push": "npm.cmd run db:push --prefix server",
+    "db:seed": "npm.cmd run db:seed --prefix server",
+    "install:all": "npm.cmd install && npm.cmd install --prefix server && npm.cmd install --prefix client"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": [
+    "invoice",
+    "fraud-detection",
+    "gstin",
+    "india-fintech",
+    "audit-system",
+    "react",
+    "express",
+    "prisma"
+  ],
+  "author": "Invoice Fraud Detection Team",
+  "license": "MIT"
+}

@@ -1,0 +1,365 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+  
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* ========================================================================= */
+/* SCROLLBAR STYLING                                                         */
+/* ========================================================================= */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(51, 65, 85, 0.8);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(71, 85, 105, 1);
+}
+
+/* ========================================================================= */
+/* LIGHT THEME SEMANTIC ENGINE (Triggered when :root:not(.dark) or html.light)*/
+/* ========================================================================= */
+html:not(.dark) ::-webkit-scrollbar-track,
+html.light ::-webkit-scrollbar-track {
+  background: rgba(241, 245, 249, 0.8);
+}
+
+html:not(.dark) ::-webkit-scrollbar-thumb,
+html.light ::-webkit-scrollbar-thumb {
+  background: rgba(203, 213, 225, 0.9);
+}
+
+html:not(.dark) ::-webkit-scrollbar-thumb:hover,
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 1);
+}
+
+/* 1. Base Surfaces & Backgrounds */
+html:not(.dark) body,
+html.light body {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* 2. Panels, Cards & Main Containers */
+html:not(.dark) [class*="bg-slate-900"],
+html.light [class*="bg-slate-900"] {
+  background-color: #ffffff !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+}
+
+/* 3. Sub-panels, Tables & Secondary Containers */
+html:not(.dark) [class*="bg-slate-950"],
+html:not(.dark) [class*="bg-slate-850"],
+html.light [class*="bg-slate-950"],
+html.light [class*="bg-slate-850"] {
+  background-color: #f1f5f9 !important;
+}
+
+html:not(.dark) .bg-slate-800,
+html.light .bg-slate-800 {
+  background-color: #e2e8f0 !important;
+  color: #1e293b !important;
+}
+
+html:not(.dark) .bg-slate-800:hover,
+html.light .bg-slate-800:hover {
+  background-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+/* 4. Borders & Dividers */
+html:not(.dark) [class*="border-slate-800"],
+html:not(.dark) [class*="border-slate-850"],
+html:not(.dark) [class*="border-slate-700"],
+html:not(.dark) [class*="border-slate-750"],
+html.light [class*="border-slate-800"],
+html.light [class*="border-slate-850"],
+html.light [class*="border-slate-700"],
+html.light [class*="border-slate-750"] {
+  border-color: #e2e8f0 !important;
+}
+
+html:not(.dark) [class*="divide-slate-800"] > :not([hidden]) ~ :not([hidden]),
+html.light [class*="divide-slate-800"] > :not([hidden]) ~ :not([hidden]) {
+  border-color: #e2e8f0 !important;
+}
+
+/* 5. Typography & Text Hierarchy */
+html:not(.dark) [class*="text-white"],
+html:not(.dark) [class*="text-slate-100"],
+html.light [class*="text-white"],
+html.light [class*="text-slate-100"] {
+  color: #0f172a !important;
+}
+
+html:not(.dark) [class*="text-slate-200"],
+html:not(.dark) [class*="text-slate-300"],
+html.light [class*="text-slate-200"],
+html.light [class*="text-slate-300"] {
+  color: #334155 !important;
+}
+
+html:not(.dark) [class*="text-slate-400"],
+html:not(.dark) [class*="text-slate-500"],
+html.light [class*="text-slate-400"],
+html.light [class*="text-slate-500"] {
+  color: #64748b !important;
+}
+
+/* 6. Primary Action Buttons (Preserve White Text on Brand Colors) */
+html:not(.dark) .bg-blue-600,
+html:not(.dark) .bg-blue-500,
+html:not(.dark) .bg-red-600,
+html:not(.dark) .bg-emerald-600,
+html:not(.dark) .bg-purple-600,
+html.light .bg-blue-600,
+html.light .bg-blue-500,
+html.light .bg-red-600,
+html.light .bg-emerald-600,
+html.light .bg-purple-600 {
+  color: #ffffff !important;
+}
+
+html:not(.dark) .bg-blue-600 *,
+html:not(.dark) .bg-red-600 *,
+html:not(.dark) .bg-emerald-600 *,
+html.light .bg-blue-600 *,
+html.light .bg-red-600 *,
+html.light .bg-emerald-600 * {
+  color: #ffffff !important;
+}
+
+/* 7. Form Controls (Inputs, Selects, Textareas) */
+html:not(.dark) input:not([type="checkbox"]):not([type="radio"]),
+html:not(.dark) select,
+html:not(.dark) textarea,
+html.light input:not([type="checkbox"]):not([type="radio"]),
+html.light select,
+html.light textarea {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+html:not(.dark) input:focus,
+html:not(.dark) select:focus,
+html:not(.dark) textarea:focus,
+html.light input:focus,
+html.light select:focus,
+html.light textarea:focus {
+  border-color: #3b82f6 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 1px #3b82f6 !important;
+}
+
+html:not(.dark) input::placeholder,
+html:not(.dark) textarea::placeholder,
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+html:not(.dark) input:disabled,
+html:not(.dark) select:disabled,
+html:not(.dark) textarea:disabled,
+html.light input:disabled,
+html.light select:disabled,
+html.light textarea:disabled {
+  background-color: #f1f5f9 !important;
+  color: #64748b !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* 8. Table Headers & Rows */
+html:not(.dark) table thead tr,
+html.light table thead tr {
+  background-color: #f1f5f9 !important;
+  color: #475569 !important;
+}
+
+html:not(.dark) tbody tr:hover,
+html.light tbody tr:hover {
+  background-color: #f8fafc !important;
+}
+
+/* 9. Topbar & Sidebar */
+html:not(.dark) header,
+html.light header {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+}
+
+html:not(.dark) aside,
+html.light aside {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 1px 0 3px 0 rgba(0, 0, 0, 0.03);
+}
+
+html:not(.dark) aside nav a:not(.bg-blue-600),
+html.light aside nav a:not(.bg-blue-600) {
+  color: #475569 !important;
+}
+
+html:not(.dark) aside nav a:not(.bg-blue-600):hover,
+html.light aside nav a:not(.bg-blue-600):hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+/* 10. Risk & Compliance Status Accents */
+html:not(.dark) [class*="bg-red-950"],
+html:not(.dark) [class*="bg-red-500/10"],
+html.light [class*="bg-red-950"],
+html.light [class*="bg-red-500/10"] {
+  background-color: #fef2f2 !important;
+}
+html:not(.dark) [class*="border-red-800"],
+html:not(.dark) [class*="border-red-900"],
+html:not(.dark) [class*="border-red-500"],
+html.light [class*="border-red-800"],
+html.light [class*="border-red-900"],
+html.light [class*="border-red-500"] {
+  border-color: #fecaca !important;
+}
+html:not(.dark) [class*="text-red-400"],
+html.light [class*="text-red-400"] {
+  color: #dc2626 !important;
+}
+
+html:not(.dark) [class*="bg-emerald-950"],
+html:not(.dark) [class*="bg-emerald-500/10"],
+html.light [class*="bg-emerald-950"],
+html.light [class*="bg-emerald-500/10"] {
+  background-color: #ecfdf5 !important;
+}
+html:not(.dark) [class*="border-emerald-800"],
+html:not(.dark) [class*="border-emerald-900"],
+html:not(.dark) [class*="border-emerald-500"],
+html.light [class*="border-emerald-800"],
+html.light [class*="border-emerald-900"],
+html.light [class*="border-emerald-500"] {
+  border-color: #a7f3d0 !important;
+}
+html:not(.dark) [class*="text-emerald-400"],
+html.light [class*="text-emerald-400"] {
+  color: #059669 !important;
+}
+
+html:not(.dark) [class*="bg-amber-950"],
+html:not(.dark) [class*="bg-orange-950"],
+html:not(.dark) [class*="bg-amber-500/10"],
+html:not(.dark) [class*="bg-orange-500/10"],
+html.light [class*="bg-amber-950"],
+html.light [class*="bg-orange-950"],
+html.light [class*="bg-amber-500/10"],
+html.light [class*="bg-orange-500/10"] {
+  background-color: #fffbeb !important;
+}
+html:not(.dark) [class*="border-amber-800"],
+html:not(.dark) [class*="border-amber-900"],
+html:not(.dark) [class*="border-orange-800"],
+html:not(.dark) [class*="border-orange-900"],
+html:not(.dark) [class*="border-amber-500"],
+html:not(.dark) [class*="border-orange-500"],
+html.light [class*="border-amber-800"],
+html.light [class*="border-amber-900"],
+html.light [class*="border-orange-800"],
+html.light [class*="border-orange-900"],
+html.light [class*="border-amber-500"],
+html.light [class*="border-orange-500"] {
+  border-color: #fde68a !important;
+}
+html:not(.dark) [class*="text-amber-400"],
+html:not(.dark) [class*="text-orange-400"],
+html.light [class*="text-amber-400"],
+html.light [class*="text-orange-400"] {
+  color: #d97706 !important;
+}
+
+html:not(.dark) [class*="bg-blue-950"],
+html:not(.dark) [class*="bg-blue-500/10"],
+html.light [class*="bg-blue-950"],
+html.light [class*="bg-blue-500/10"] {
+  background-color: #eff6ff !important;
+}
+html:not(.dark) [class*="border-blue-800"],
+html:not(.dark) [class*="border-blue-900"],
+html.light [class*="border-blue-800"],
+html.light [class*="border-blue-900"] {
+  border-color: #bfdbfe !important;
+}
+html:not(.dark) [class*="text-blue-400"],
+html:not(.dark) [class*="text-blue-300"],
+html.light [class*="text-blue-400"],
+html.light [class*="text-blue-300"] {
+  color: #2563eb !important;
+}
+
+html:not(.dark) [class*="bg-purple-950"],
+html:not(.dark) [class*="bg-purple-500/10"],
+html.light [class*="bg-purple-950"],
+html.light [class*="bg-purple-500/10"] {
+  background-color: #faf5ff !important;
+}
+html:not(.dark) [class*="border-purple-800"],
+html:not(.dark) [class*="border-purple-900"],
+html.light [class*="border-purple-800"],
+html.light [class*="border-purple-900"] {
+  border-color: #e9d5ff !important;
+}
+html:not(.dark) [class*="text-purple-400"],
+html.light [class*="text-purple-400"] {
+  color: #7e22ce !important;
+}
+
+/* 11. Modal Dialogs & Backdrops */
+html:not(.dark) .fixed.inset-0.bg-slate-950\/80,
+html.light .fixed.inset-0.bg-slate-950\/80 {
+  background-color: rgba(15, 23, 42, 0.45) !important;
+}
+
+/* 12. Recharts Light Theme Overrides */
+html:not(.dark) .recharts-cartesian-grid line,
+html.light .recharts-cartesian-grid line {
+  stroke: #e2e8f0 !important;
+}
+
+html:not(.dark) .recharts-default-tooltip,
+html.light .recharts-default-tooltip {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1) !important;
+}
+
+html:not(.dark) .recharts-tooltip-item-name,
+html:not(.dark) .recharts-tooltip-item-value,
+html.light .recharts-tooltip-item-name,
+html.light .recharts-tooltip-item-value {
+  color: #0f172a !important;
+}
+
+html:not(.dark) .recharts-text,
+html.light .recharts-text {
+  fill: #64748b !important;
+}
